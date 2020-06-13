@@ -6,7 +6,3 @@ This is a short program for perspective transformation of a quadrialteral define
 Prerequisites:
 OpenCV library with installed contributory modules (Aruco module in particular)
 Either GNU compiler collection or MS visual Studio installed
-
-https://www.youtube.com/watch?v=rcnQRO61aHQ
-
-https://www.youtube.com/watch?v=8YxZ11rY0zM
