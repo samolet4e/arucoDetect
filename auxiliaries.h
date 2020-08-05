@@ -5,6 +5,8 @@
 #include <opencv2/aruco.hpp>
 #include <unordered_map>
 
+//#define APRILTAG
+
 typedef float Real;
 
 typedef struct _fixation {
@@ -12,8 +14,8 @@ typedef struct _fixation {
 	cv::Point2f X;
 } fixation;
 
-int imshowT(cv::Mat input, std::unordered_map<int, cv::Point2f > &umap);
+//cv::Mat hwnd2mat(HWND hwnd);
+int imshowT(cv::Mat input, std::unordered_map<int, cv::Point2f > &umap, std::vector <fixation> &fPoint, Real timeStamp);
 void readFixations(std::vector <fixation> &fPoint, int w, int h);
-void drawFixation(cv::Mat input, std::vector <fixation> &fPoint, Real timeStamp);
 
 #endif
