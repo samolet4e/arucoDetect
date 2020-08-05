@@ -1,13 +1,22 @@
 #include "auxiliaries.h"
-//#define UNDISTORT
+#define UNDISTORT
 
 int main() {
+//HWND hDesktopWnd = GetDesktopWindow();
 bool playVideo = true, playTransform = false;
 std::vector< int > ids;
 std::vector< std::vector<cv::Point2f> > corners;
 
-	int dictionaryId = 16;
+#ifdef APRILTAG
+	int dictionaryId = cv::aruco::DICT_APRILTAG_36h11;
+#else
+	int dictionaryId = cv::aruco::DICT_ARUCO_ORIGINAL;
+#endif
+
 	cv::Ptr<cv::aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::PREDEFINED_DICTIONARY_NAME(dictionaryId));
+
+
+
 
 	// http://aishack.in/tutorials/calibrating-undistorting-opencv-oh-yeah/
 	// https://riptutorial.com/opencv/example/9922/efficient-pixel-access-using-cv--mat--ptr-t--pointer
@@ -28,7 +37,10 @@ std::vector< std::vector<cv::Point2f> > corners;
 //    ptr[2] = 0.05f;
 //    std::cout << dist_coeffs << std::endl;
 
-	cv::VideoCapture cap("world.mp4");
+
+
+
+	cv::VideoCapture cap("output.avi");
 	if (!cap.isOpened()) {
 		std::cout << "Error opening video stream or file" << std::endl;
 		return -1;
@@ -58,7 +70,7 @@ std::vector< std::vector<cv::Point2f> > corners;
 			if (ids.size() > 0) cv::aruco::drawDetectedMarkers(image, corners, ids); // If at least one marker detected
 
 			// for (int i = 0; i < ids.size(); i++) std::cout << ids.at(i) << std::endl; std::cout << std::endl;
-			// ACHTUNG! Markers are detected in an arbitrary order. Consider using a hasmap instead of an array!
+			// ACHTUNG! Every frame markers are detected in an arbitrary order. Consider using a hasmap instead of an array!
 			std::unordered_map< int, cv::Point2f > umap;		 // umap[markerID, markerCentroid]
 			// draws a circle at each marker centroid
 			for (int i = 0; i < (int)ids.size(); i++) {			 // scans all markers
@@ -75,12 +87,18 @@ std::vector< std::vector<cv::Point2f> > corners;
 				// p[0] = 0.; p[1] = 0.; // redundant in spite of recursion
 			}//for_i
 
+			// The row below is solely intended to Konst ideal
+//			umap.insert(std::make_pair<int, cv::Point2f>(108, cv::Point2f((Real)umap[105].x - 90.f, (Real)capHeight - 550.f)));
+			// Two rows below are solely intended to Rossen the pilot:
+//			umap.insert(std::make_pair<int, cv::Point2f>(105, cv::Point2f(umap[108].x, (Real)capHeight)));
+//			umap.insert(std::make_pair<int, cv::Point2f>(106, cv::Point2f(umap[107].x, (Real)capHeight)));
+
 			Real currTimeStamp = (Real)cap.get(cv::CAP_PROP_POS_MSEC) / 1000.f;
 
-			drawFixation(image, fPoint, currTimeStamp);
+//			drawFixation(image, fPoint, currTimeStamp);
 			
 			// what to play: normal or transformed image
-			if (playTransform) imshowT(image, umap);// , fPoint, currTimeStamp);
+			if (playTransform) imshowT(image, umap, fPoint, currTimeStamp);
 			else imshow("Detected markers", image);
 
 			//umap.clear(); // redundant, the map is overwritten at the same indices
@@ -92,6 +110,7 @@ std::vector< std::vector<cv::Point2f> > corners;
 		// flow control
 		char key = cv::waitKey(20);
 		if (key == 'p') playVideo = !playVideo;
+//		else if (key == 's') { cv::Mat shot = hwnd2mat(hDesktopWnd); imshow("Screenshot", shot); } // takes a screenshot
 		else if (key == 't') playTransform = !playTransform;
 		else if (key == 27) break; // a very complicated behaviour
 		else {}
