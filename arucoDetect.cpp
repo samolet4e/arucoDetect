@@ -30,15 +30,6 @@ std::vector< std::vector<cv::Point2f> > corners;
 	fs["camera_matrix"] >> intrinsic;
 	fs["distortion_coefficients"] >> dist_coeffs;
 
-//	intrinsic.ptr<double>(0)[0] = 1;
-//	intrinsic.ptr<double>(1)[1] = 1;
-
-//    double* ptr = dist_coeffs.ptr<double>(0);
-//    ptr[2] = 0.05f;
-//    std::cout << dist_coeffs << std::endl;
-
-
-
 
 	cv::VideoCapture cap("output.avi");
 	if (!cap.isOpened()) {
@@ -87,16 +78,8 @@ std::vector< std::vector<cv::Point2f> > corners;
 				// p[0] = 0.; p[1] = 0.; // redundant in spite of recursion
 			}//for_i
 
-			// The row below is solely intended to Konst ideal
-//			umap.insert(std::make_pair<int, cv::Point2f>(108, cv::Point2f((Real)umap[105].x - 90.f, (Real)capHeight - 550.f)));
-			// Two rows below are solely intended to Rossen the pilot:
-//			umap.insert(std::make_pair<int, cv::Point2f>(105, cv::Point2f(umap[108].x, (Real)capHeight)));
-//			umap.insert(std::make_pair<int, cv::Point2f>(106, cv::Point2f(umap[107].x, (Real)capHeight)));
-
 			Real currTimeStamp = (Real)cap.get(cv::CAP_PROP_POS_MSEC) / 1000.f;
 
-//			drawFixation(image, fPoint, currTimeStamp);
-			
 			// what to play: normal or transformed image
 			if (playTransform) imshowT(image, umap, fPoint, currTimeStamp);
 			else imshow("Detected markers", image);
